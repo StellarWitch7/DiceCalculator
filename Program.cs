@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DiceCalculator
+namespace StellarDiceCalculator
 {
     class Program
     {
@@ -44,7 +44,7 @@ namespace DiceCalculator
         private static string Calculate(int amount, int type)
         {
             Dictionary<int, int> Counts = new Dictionary<int, int>();
-            Array combo = new int[amount];
+            int[] combo = new int[amount];
             bool isDone = false;
 
             for (int i = combo.Length; i > 0; i--)
@@ -68,7 +68,7 @@ namespace DiceCalculator
 
                 Counts[newTotal]++;
                 Console.WriteLine("Calculating... Roll Total: " + newTotal);
-                isDone = Increment(ref combo, 0, amount, type);
+                isDone = Increment(ref combo, 0, type);
 
                 if (newTotal >= amount * type)
                 {
@@ -79,19 +79,19 @@ namespace DiceCalculator
             return "Dice: " + amount + "d" + type + ". Most likely roll: " + Counts.OrderByDescending(kv => kv.Value).First().Key.ToString();
         }
 
-        private static bool Increment(ref Array array, int pos, int dieAmount, int dieType)
+        private static bool Increment(ref int[] array, int pos, int dieType)
         {
             if (pos < array.Length)
             {
-                if ((int) array.GetValue(pos) < dieType)
+                if (array[pos] < dieType)
                 {
-                    array.SetValue((int) array.GetValue(pos) + 1, pos);
+                    array[pos] = array[pos] + 1;
                     return false;
                 }
                 else
                 {
-                    array.SetValue(1, pos);
-                    return Increment(ref array, pos + 1, dieAmount, dieType);
+                    array[pos] = 1;
+                    return Increment(ref array, pos + 1, dieType);
                 }
             }
             else
