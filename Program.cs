@@ -30,7 +30,6 @@ namespace DiceCalculator
                 }
 
                 int type = int.Parse(input);
-                Console.WriteLine("Calculating...");
                 Console.WriteLine(Calculate(amount, type));
 
                 //Exit program
@@ -68,10 +67,16 @@ namespace DiceCalculator
                 }
 
                 Counts[newTotal]++;
+                Console.WriteLine("Calculating... Roll Total: " + newTotal);
                 isDone = Increment(ref combo, 0, amount, type);
+
+                if (newTotal >= amount * type)
+                {
+                    isDone = true;
+                }
             }
 
-            return Counts.OrderByDescending(kv => kv.Value).First().Key.ToString();
+            return "Dice: " + amount + "d" + type + ". Most likely roll: " + Counts.OrderByDescending(kv => kv.Value).First().Key.ToString();
         }
 
         private static bool Increment(ref Array array, int pos, int dieAmount, int dieType)
