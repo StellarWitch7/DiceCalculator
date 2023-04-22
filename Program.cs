@@ -31,17 +31,7 @@ namespace DiceCalculator
 
                 int type = int.Parse(input);
                 Console.WriteLine("Calculating...");
-
-                if (Math.Pow(type, amount) > 2000000000)
-                {
-                    amount = 0;
-                    type = 0;
-                    Console.WriteLine("Numbers are too big");
-                }
-                else
-                {
-                    Console.WriteLine(Calculate(amount, type));
-                }
+                Console.WriteLine(Calculate(amount, type));
 
                 //Exit program
                 Console.WriteLine("Input 'exit' to quit, press enter to retry");
@@ -54,57 +44,55 @@ namespace DiceCalculator
 
         private static string Calculate(int amount, int type)
         {
-            Array combinations = new Array[(int) Math.Pow(type, amount)];
-            Array lastCombo = new int[amount];
+            Dictionary<int, int> Counts = new Dictionary<int, int>();
+            Array combo = new int[amount];
+            bool isDone = false;
 
-            for (int n = amount; n > 0; n--)
+            for (int i = combo.Length; i > 0; i--)
             {
-                lastCombo.SetValue(1, amount - n);
+                combo.SetValue(1, i - 1);
             }
 
-            for (int i = (int) Math.Pow(type, amount); i > 0; i--)
-            {
-                Array newCombo = lastCombo;
-
-                for (int n = amount; n > 0; n--)
-                {
-                    if ((int) newCombo.GetValue(amount - n) < type)
-                    {
-                        newCombo.SetValue(1 + (int) newCombo.GetValue(amount - n), amount - n);
-                        break;
-                    }
-                }
-
-                lastCombo = newCombo;
-                combinations.SetValue(newCombo, (int) Math.Pow(type, amount) - i);
-            }
-
-            Array totals = new int[combinations.Length];
-
-            for (int i = combinations.Length; i > 0; i--)
+            while (isDone == false)
             {
                 int newTotal = 0;
 
-                foreach (int value in (Array) combinations.GetValue(combinations.Length - i))
+                foreach (int value in combo)
                 {
                     newTotal += value;
                 }
 
-                totals.SetValue(newTotal, combinations.Length - i);
-            }
-
-            var counts = new Dictionary<int, int>();
-            foreach (int i in totals)
-            {
-                if (!counts.ContainsKey(i))
+                if (!Counts.ContainsKey(newTotal))
                 {
-                    counts.Add(i, 0);
+                    Counts.Add(newTotal, 0);
                 }
 
-                counts[i]++;
+                Counts[newTotal]++;
+                isDone = Increment(ref combo, 0, amount, type);
             }
 
-            return counts.OrderByDescending(kv => kv.Value).First().Key.ToString();
+            return Counts.OrderByDescending(kv => kv.Value).First().Key.ToString();
+        }
+
+        private static bool Increment(ref Array array, int pos, int dieAmount, int dieType)
+        {
+            if (pos < array.Length)
+            {
+                if ((int) array.GetValue(pos) < dieType)
+                {
+                    array.SetValue((int) array.GetValue(pos) + 1, pos);
+                    return false;
+                }
+                else
+                {
+                    array.SetValue(1, pos);
+                    return Increment(ref array, pos + 1, dieAmount, dieType);
+                }
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }
