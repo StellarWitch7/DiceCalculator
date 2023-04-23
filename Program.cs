@@ -48,6 +48,15 @@ namespace StellarDiceCalculator
                 }
 
                 int advantage = int.Parse(input);
+                Console.WriteLine("Enter the minimum roll to succeed. This will give you a percentage chance of succeeding. Enter 'exit' to quit.");
+                input = Console.ReadLine();
+
+                if (input == "exit")
+                {
+                    appRunning = false;
+                }
+
+                int minimumRoll = int.Parse(input);
                 Console.WriteLine("Calculating...");
 
                 if (advantage >= amount)
@@ -56,7 +65,7 @@ namespace StellarDiceCalculator
                 }
                 else
                 {
-                    Console.WriteLine(Calculate(amount, type, bonus, advantage));
+                    Console.WriteLine(Calculate(amount, type, bonus, advantage, minimumRoll));
                 }
 
                 //Exit program
@@ -68,7 +77,7 @@ namespace StellarDiceCalculator
             }
         }
 
-        private static string Calculate(int amount, int type, int bonus, int advantage)
+        private static string Calculate(int amount, int type, int bonus, int advantage, int minimumRoll)
         {
             //This is the simple version. It is very fast. 
             if (bonus == 0 && advantage == 0)
@@ -114,7 +123,6 @@ namespace StellarDiceCalculator
                     int[] a = new int[combo.Length];
                     int[] b = new int[a.Length - advantage];
                     Array.Copy(combo, a, combo.Length);
-                    //CustomReverseComparer doesn't work as expected
                     Array.Sort(a, new CustomReverseComparer());
                     Array.Copy(a, 0, b, 0, a.Length - advantage);
                     finalCombo = b;
@@ -139,7 +147,17 @@ namespace StellarDiceCalculator
                 counts[total]++;
             }
 
-            return "Dice: " + amount + "d" + type + ". Most likely roll: " + counts.OrderByDescending(kv => kv.Value).First().Key;
+            int mostLikelyRoll = counts.OrderByDescending(kv => kv.Value).First().Key;
+            float chanceToSucceed = 0;
+            //Calculate chanceToSucceed
+            counts.OrderByDescending(kv => kv.Value);
+
+            return "Dice: " + amount
+                + "d" + type
+                + ". Bonus: " + bonus
+                + ". Advantage/Disadvantage: " + advantage
+                + ". Most likely roll: " + mostLikelyRoll
+                + ". Chance to succeed: " + chanceToSucceed;
         }
 
         private static bool Increment(ref int[] array, int pos, int dieType)
