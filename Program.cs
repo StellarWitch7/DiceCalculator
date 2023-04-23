@@ -114,6 +114,7 @@ namespace StellarDiceCalculator
                     int[] a = new int[combo.Length];
                     int[] b = new int[a.Length - advantage];
                     Array.Copy(combo, a, combo.Length);
+                    //CustomReverseComparer doesn't work as expected
                     Array.Sort(a, new CustomReverseComparer());
                     Array.Copy(a, 0, b, 0, a.Length - advantage);
                     finalCombo = b;
