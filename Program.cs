@@ -6,7 +6,7 @@ namespace StellarDiceCalculator
 {
     class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             bool appRunning = true;
 
@@ -39,7 +39,7 @@ namespace StellarDiceCalculator
                 }
 
                 int bonus = int.Parse(input);
-                Console.WriteLine("Enter the amount of die, starting from the lowest, to be removed. Enter 'exit' to quit.");
+                Console.WriteLine("Enter the roll advantage. Negative numbers will result in a disadvantage. Enter 'exit' to quit.");
                 input = Console.ReadLine();
 
                 if (input == "exit")
@@ -49,7 +49,15 @@ namespace StellarDiceCalculator
 
                 int advantage = int.Parse(input);
                 Console.WriteLine("Calculating...");
-                Console.WriteLine(Calculate(amount, type, bonus, advantage));
+
+                if (advantage >= amount)
+                {
+                    Console.WriteLine("Error: No dice left over");
+                }
+                else
+                {
+                    Console.WriteLine(Calculate(amount, type, bonus, advantage));
+                }
 
                 //Exit program
                 Console.WriteLine("Input 'exit' to quit, press enter to retry");
@@ -65,7 +73,7 @@ namespace StellarDiceCalculator
             //This is the simple version. It is very fast. 
             if (bonus == 0 && advantage == 0)
             {
-                if (amount <= 0 || type <= 0) return "The answer is zero";
+                if (amount <= 0 || type <= 0) return "Error: Cannot process numbers";
                 var coefficient = (type + 1) / 2f;
                 return "Dice: " + amount + "d" + type + ". Most likely roll: " + Math.Round(amount * coefficient).ToString();
             }
