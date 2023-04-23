@@ -48,7 +48,7 @@ namespace StellarDiceCalculator
                 }
 
                 int advantage = int.Parse(input);
-                Console.WriteLine("Enter the minimum roll to succeed. This will give you a percentage chance of succeeding. Enter 'exit' to quit.");
+                Console.WriteLine("Enter the minimum roll to succeed. Entering zero will stop it from being calculated. Enter 'exit' to quit.");
                 input = Console.ReadLine();
 
                 if (input == "exit")
@@ -80,11 +80,16 @@ namespace StellarDiceCalculator
         private static string Calculate(int amount, int type, int bonus, int advantage, int minimumRoll)
         {
             //This is the simple version. It is very fast. 
-            if (bonus == 0 && advantage == 0)
+            if (bonus == 0 && advantage == 0 && minimumRoll == 0)
             {
                 if (amount <= 0 || type <= 0) return "Error: Cannot process numbers";
                 var coefficient = (type + 1) / 2f;
-                return "Dice: " + amount + "d" + type + ". Most likely roll: " + Math.Round(amount * coefficient).ToString();
+                return "Dice: " + amount
+                + "d" + type
+                + ". Bonus: " + bonus
+                + ". Advantage/Disadvantage: " + advantage
+                + ". Most likely roll: " + Math.Round(amount * coefficient)
+                + ". Chance to succeed: not calculated.";
             }
 
             Dictionary<int, int> counts = new Dictionary<int, int>();
@@ -148,9 +153,23 @@ namespace StellarDiceCalculator
             }
 
             int mostLikelyRoll = counts.OrderByDescending(kv => kv.Value).First().Key;
-            float chanceToSucceed = 0;
+            int above = 0;
+            int below = 0;
             //Calculate chanceToSucceed
-            counts.OrderByDescending(kv => kv.Value);
+            foreach (KeyValuePair<int, int> key in counts)
+            {
+                if (key.Key >= minimumRoll)
+                {
+                    above += key.Value;
+                }
+                else
+                {
+                    below += key.Value;
+                }
+            }
+
+            int aboveBelowTotal = above + below;
+            float chanceToSucceed = (200 * above + 1) / (aboveBelowTotal * 2);
 
             return "Dice: " + amount
                 + "d" + type
