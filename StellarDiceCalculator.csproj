@@ -6,9 +6,15 @@
     <Version>2.1.1</Version>
     <Authors>StellarWitch</Authors>
     <SignAssembly>false</SignAssembly>
+    <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>true</Optimize>
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Optimize>true</Optimize>
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>

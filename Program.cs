@@ -93,7 +93,7 @@ namespace StellarDiceCalculator
                 + ". Chance to succeed: not calculated.";
             }
 
-            Dictionary<int, int> counts = new Dictionary<int, int>();
+            Dictionary<int, ulong> counts = new Dictionary<int, ulong>();
             int[] combo = new int[amount];
             bool isDone = false;
 
@@ -157,15 +157,15 @@ namespace StellarDiceCalculator
             ulong above = 0;
             ulong below = 0;
             //Calculate chanceToSucceed
-            foreach (KeyValuePair<int, int> key in counts)
+            foreach (KeyValuePair<int, ulong> key in counts)
             {
                 if (key.Key >= minimumRoll)
                 {
-                    above += (ulong)key.Value;
+                    above += key.Value;
                 }
                 else
                 {
-                    below += (ulong)key.Value;
+                    below += key.Value;
                 }
             }
 
