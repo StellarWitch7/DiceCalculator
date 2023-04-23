@@ -88,6 +88,7 @@ namespace StellarDiceCalculator
                 + "d" + type
                 + ". Bonus: " + bonus
                 + ". Advantage/Disadvantage: " + advantage
+                + ". Minimum Roll: " + minimumRoll
                 + ". Most likely roll: " + Math.Round(amount * coefficient)
                 + ". Chance to succeed: not calculated.";
             }
@@ -175,6 +176,7 @@ namespace StellarDiceCalculator
                 + "d" + type
                 + ". Bonus: " + bonus
                 + ". Advantage/Disadvantage: " + advantage
+                + ". Minimum Roll: " + minimumRoll
                 + ". Most likely roll: " + mostLikelyRoll
                 + ". Chance to succeed: " + chanceToSucceed;
         }
