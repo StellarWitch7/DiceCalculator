@@ -48,7 +48,7 @@ namespace StellarDiceCalculator
                 }
 
                 int advantage = int.Parse(input);
-                Console.WriteLine("Enter the minimum roll to succeed. Entering zero will stop it from being calculated. Enter 'exit' to quit.");
+                Console.WriteLine("Enter the minimum roll to succeed. Entering zero may stop it from being calculated. Enter 'exit' to quit.");
                 input = Console.ReadLine();
 
                 if (input == "exit")
