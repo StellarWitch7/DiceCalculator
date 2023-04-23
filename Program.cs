@@ -95,6 +95,8 @@ namespace StellarDiceCalculator
 
             Dictionary<int, ulong> counts = new Dictionary<int, ulong>();
             int[] combo = new int[amount];
+            int combinationsCounted = 0;
+            int loop = 0;
             bool isDone = false;
 
             for (int i = combo.Length - 1; i > 0; i--)
@@ -151,6 +153,13 @@ namespace StellarDiceCalculator
                 }
 
                 counts[total]++;
+                combinationsCounted++;
+                loop = (loop + 1) % 250000;
+
+                if (loop == 0)
+                {
+                    Console.WriteLine(combinationsCounted + " of " + Math.Pow(type, amount));
+                }
             }
 
             int mostLikelyRoll = counts.OrderByDescending(kv => kv.Value).First().Key;
