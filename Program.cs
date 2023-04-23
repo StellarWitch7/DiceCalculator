@@ -39,15 +39,15 @@ namespace StellarDiceCalculator
                 }
 
                 int bonus = int.Parse(input);
-                //Console.WriteLine("Enter the amount of die, starting from the lowest, to be removed. Enter 'exit' to quit.");
-                //input = Console.ReadLine();
+                Console.WriteLine("Enter the amount of die, starting from the lowest, to be removed. Enter 'exit' to quit.");
+                input = Console.ReadLine();
 
-                //if (input == "exit")
-                //{
-                //    appRunning = false;
-                //}
+                if (input == "exit")
+                {
+                    appRunning = false;
+                }
 
-                int advantage = 0; //int.Parse(input);
+                int advantage = int.Parse(input);
                 Console.WriteLine("Calculating...");
                 Console.WriteLine(Calculate(amount, type, bonus, advantage));
 
@@ -63,13 +63,15 @@ namespace StellarDiceCalculator
         private static string Calculate(int amount, int type, int bonus, int advantage)
         {
             //This is the simple version. It is very fast. 
-            //if (amount <= 0 || type <= 0) return "The answer is zero";
-            //var coefficient = (type + 1) / 2f;
-            //return "Dice: " + amount + "d" + type + ". Most likely roll: " + Math.Round(amount * coefficient).ToString();
+            if (bonus == 0 && advantage == 0)
+            {
+                if (amount <= 0 || type <= 0) return "The answer is zero";
+                var coefficient = (type + 1) / 2f;
+                return "Dice: " + amount + "d" + type + ". Most likely roll: " + Math.Round(amount * coefficient).ToString();
+            }
 
             Dictionary<int, int> counts = new Dictionary<int, int>();
             int[] combo = new int[amount];
-            int[] finalCombo = new int[0];
             bool isDone = false;
 
             for (int i = combo.Length - 1; i > 0; i--)
@@ -79,7 +81,9 @@ namespace StellarDiceCalculator
 
             while (isDone == false)
             {
+                int[] finalCombo;
                 int total = 0;
+
                 isDone = Increment(ref combo, 0, type);
 
                 if (total >= amount * type)
@@ -87,15 +91,28 @@ namespace StellarDiceCalculator
                     isDone = true;
                 }
 
-                finalCombo = combo;
-
                 //Check for the lowest values and remove them based on advantage
-                if (advantage > 0)
+                if (advantage < 0)
                 {
-                    for (int i = advantage; i > 0; i--)
-                    {
-                        //Unimplemented
-                    }
+                    int[] a = new int[combo.Length];
+                    int[] b = new int[a.Length + advantage];
+                    Array.Copy(combo, a, combo.Length);
+                    Array.Sort(a);
+                    Array.Copy(a, 0, b, 0, a.Length + advantage);
+                    finalCombo = b;
+                }
+                else if (advantage > 0)
+                {
+                    int[] a = new int[combo.Length];
+                    int[] b = new int[a.Length - advantage];
+                    Array.Copy(combo, a, combo.Length);
+                    Array.Sort(a, new CustomReverseComparer());
+                    Array.Copy(a, 0, b, 0, a.Length - advantage);
+                    finalCombo = b;
+                }
+                else
+                {
+                    finalCombo = combo;
                 }
 
                 foreach (int value in finalCombo)
