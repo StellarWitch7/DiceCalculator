@@ -30,7 +30,26 @@ namespace StellarDiceCalculator
                 }
 
                 int type = int.Parse(input);
-                Console.WriteLine(Calculate(amount, type));
+                Console.WriteLine("Enter the bonus to be added to each roll. Must be a whole number. Enter 'exit' to quit.");
+                input = Console.ReadLine();
+
+                if (input == "exit")
+                {
+                    appRunning = false;
+                }
+
+                int bonus = int.Parse(input);
+                //Console.WriteLine("Enter the amount of die, starting from the lowest, to be removed. Enter 'exit' to quit.");
+                //input = Console.ReadLine();
+
+                //if (input == "exit")
+                //{
+                //    appRunning = false;
+                //}
+
+                int advantage = 0; //int.Parse(input);
+                Console.WriteLine("Calculating...");
+                Console.WriteLine(Calculate(amount, type, bonus, advantage));
 
                 //Exit program
                 Console.WriteLine("Input 'exit' to quit, press enter to retry");
@@ -41,42 +60,60 @@ namespace StellarDiceCalculator
             }
         }
 
-        private static string Calculate(int amount, int type)
+        private static string Calculate(int amount, int type, int bonus, int advantage)
         {
-            Dictionary<int, int> Counts = new Dictionary<int, int>();
+            //This is the simple version. It is very fast. 
+            //if (amount <= 0 || type <= 0) return "The answer is zero";
+            //var coefficient = (type + 1) / 2f;
+            //return "Dice: " + amount + "d" + type + ". Most likely roll: " + Math.Round(amount * coefficient).ToString();
+
+            Dictionary<int, int> counts = new Dictionary<int, int>();
             int[] combo = new int[amount];
+            int[] finalCombo = new int[0];
             bool isDone = false;
 
-            for (int i = combo.Length; i > 0; i--)
+            for (int i = combo.Length - 1; i > 0; i--)
             {
-                combo.SetValue(1, i - 1);
+                combo.SetValue(1, i);
             }
 
             while (isDone == false)
             {
-                int newTotal = 0;
-
-                foreach (int value in combo)
-                {
-                    newTotal += value;
-                }
-
-                if (!Counts.ContainsKey(newTotal))
-                {
-                    Counts.Add(newTotal, 0);
-                }
-
-                Counts[newTotal]++;
-                Console.WriteLine("Calculating... Roll Total: " + newTotal);
+                int total = 0;
                 isDone = Increment(ref combo, 0, type);
 
-                if (newTotal >= amount * type)
+                if (total >= amount * type)
                 {
                     isDone = true;
                 }
+
+                finalCombo = combo;
+
+                //Check for the lowest values and remove them based on advantage
+                if (advantage > 0)
+                {
+                    for (int i = advantage; i > 0; i--)
+                    {
+                        //Unimplemented
+                    }
+                }
+
+                foreach (int value in finalCombo)
+                {
+                    total += value;
+                }
+
+                total += bonus;
+
+                if (!counts.ContainsKey(total))
+                {
+                    counts.Add(total, 0);
+                }
+
+                counts[total]++;
             }
 
-            return "Dice: " + amount + "d" + type + ". Most likely roll: " + Counts.OrderByDescending(kv => kv.Value).First().Key.ToString();
+            return "Dice: " + amount + "d" + type + ". Most likely roll: " + counts.OrderByDescending(kv => kv.Value).First().Key;
         }
 
         private static bool Increment(ref int[] array, int pos, int dieType)
