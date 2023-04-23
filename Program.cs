@@ -153,23 +153,23 @@ namespace StellarDiceCalculator
             }
 
             int mostLikelyRoll = counts.OrderByDescending(kv => kv.Value).First().Key;
-            int above = 0;
-            int below = 0;
+            ulong above = 0;
+            ulong below = 0;
             //Calculate chanceToSucceed
             foreach (KeyValuePair<int, int> key in counts)
             {
                 if (key.Key >= minimumRoll)
                 {
-                    above += key.Value;
+                    above += (ulong)key.Value;
                 }
                 else
                 {
-                    below += key.Value;
+                    below += (ulong)key.Value;
                 }
             }
 
-            int aboveBelowTotal = above + below;
-            float chanceToSucceed = (200 * above + 1) / (aboveBelowTotal * 2);
+            ulong aboveBelowTotal = above + below;
+            ulong chanceToSucceed = (200 * above + 1) / (aboveBelowTotal * 2);
 
             return "Dice: " + amount
                 + "d" + type
