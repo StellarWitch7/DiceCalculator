@@ -93,6 +93,11 @@ namespace StellarDiceCalculator
                 + ". Chance to succeed: not calculated.";
             }
 
+            if (Math.Pow(type, amount) > uint.MaxValue)
+            {
+                return "Type and amount of die results in a value larger than the maximum of an int. This is not acceptable.";
+            }
+
             Dictionary<int, ulong> counts = new Dictionary<int, ulong>();
             int[] combo = new int[amount];
             int combinationsCounted = 0;
@@ -158,7 +163,7 @@ namespace StellarDiceCalculator
 
                 if (loop == 0)
                 {
-                    Console.WriteLine(combinationsCounted + " of " + Math.Pow(type, amount));
+                    Console.WriteLine("Combinations calculated: " + combinationsCounted + " of " + Math.Pow(type, amount));
                 }
             }
 
